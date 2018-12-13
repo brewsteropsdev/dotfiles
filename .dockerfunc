@@ -1,0 +1,35 @@
+export DOCKER_REPO_PREFIX=skiermatt2
+
+#aws(){
+#  docker run -it --rm \
+#    -v "${HOME}/.aws:/root/.aws" \
+#    -v "${PWD}":/workdir \
+#    -w /workdir \
+#    --log-driver none \
+#    --name aws \
+#    ${DOCKER_REPO_PREFIX}/awscli --profile=$AWS_PROFILE "$@"
+#}
+
+aws_debug(){
+  docker run -it --rm \
+    -v "${HOME}/.aws:/root/.aws" \
+    -v "${PWD}":/workdir \
+    -w /workdir \
+    --log-driver none \
+    --name aws \
+    --entrypoint sh \
+    ${DOCKER_REPO_PREFIX}/awscli --profile=$AWS_PROFILE "$@"
+}
+
+unset_docker_env(){
+  unset DOCKER_TLS_VERIFY
+  unset DOCKER_CERT_PATH
+  unset DOCKER_HOST
+}
+
+set_docker_env(){
+  unset_docker_env
+  pushd ~/dev/env/dockerenvs/$1
+  eval "$(< env.sh)"
+  popd
+}
